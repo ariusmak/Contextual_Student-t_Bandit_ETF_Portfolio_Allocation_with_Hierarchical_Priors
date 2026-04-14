@@ -45,21 +45,22 @@ The working dataset is a monthly ETF panel with:
 
 These notebooks were developed in Colab, but are structured as an end‑to‑end pipeline:
 
-1. **`Copy_of_Tagging (1) (1).ipynb`**  
+
+1. **`1_Building_dataset.ipynb`**  
+   Builds the final modeling panel:
+   - starts from a prebuilt ETF monthly panel (prices/returns + risk‑free rate)
+   - engineers `months_outperforming` (prior streak, leak‑free)
+   - constructs macro features (inflation, spreads, VIX, yield slope), then **lags by 1 month**
+   - merges macro covariates + tags → exports `final_dataset.csv`
+  
+2. **`2_Tagging.ipynb`**  
    Creates ETF tags used for cold‑start priors:
    - pulls ETF metadata (`category`, `shortName`, `longName`) via **yfinance**
    - applies regex keyword rules to assign 5 tags (equity / intl / gov / credit / macro)
    - flags ambiguous cases (`needs_review`) and supports **manual overrides**
    - produces `tagged_final.csv`
 
-2. **`Building_dataset (1).ipynb`**  
-   Builds the final modeling panel:
-   - starts from a prebuilt ETF monthly panel (prices/returns + risk‑free rate)
-   - engineers `months_outperforming` (prior streak, leak‑free)
-   - constructs macro features (inflation, spreads, VIX, yield slope), then **lags by 1 month**
-   - merges macro covariates + tags → exports `final_dataset.csv`
-
-3. **`Non-Contextual_.ipynb`**  
+4. **`3_Non_Contextual.ipynb`**  
    Groundwork + ablations (what I tried before the final model):
    - **Bernoulli sign-bandit** (Beta‑Bernoulli) baseline
    - **Non‑contextual Student‑t** magnitude model
@@ -67,7 +68,7 @@ These notebooks were developed in Colab, but are structured as an end‑to‑end
    - Top‑N selection to enforce capital scarcity and reduce “over-diversification”
    - hyperparameter sweeps for sizing strength (`k`) and selection (`N`)
 
-4. **`Contextual_studentt (1).ipynb`**  
+5. **`4_Contextual_studentt (1).ipynb`**  
    Final model: **Contextual Student‑t Top‑N** with predictive variance + warm‑started walk‑forward evaluation.
 
 ---
